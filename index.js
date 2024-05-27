@@ -25,15 +25,15 @@ const userSchema = new mongoose.Schema({
   password: String,
   gender: String,
 });
-const User = mongoose.model('ReactNativeTestUser', userSchema);
+const User = mongoose.model('All-Ai-users', userSchema);
 
 // Routes
 app.get('/', (req, res) => {
   res.send({ message: 'This is a test' });
 });
 
-app.post('/register', async (req, res) => {
-  const { username, email, password, gender } = req.body;
+app.post('/signup', async (req, res) => {
+  const { username, email, password } = req.body;
 
   try {
     const encryptedPassword = await bcryptjs.hash(password, 10);
@@ -47,7 +47,6 @@ app.post('/register', async (req, res) => {
       username,
       email,
       password: encryptedPassword,
-      gender,
     });
 
     await newUser.save();
@@ -57,16 +56,6 @@ app.post('/register', async (req, res) => {
     return res.status(500).send({ message: 'Internal server error' });
   }
 });
-
-app.post('/login' , async(req, res) => {
-    const {email , password} = req.body;
-    const registeredUser = await User.findOne({email});
-    const isPasswordValid = bcryptjs.compare(password,registeredUser.password);
-
-    if(registeredUser && isPasswordValid) {
-        return res.status(200).send({message: 'User logged in successfully', status: 'ok'});
-    }
-    })
 
 // Start the server
 const PORT = 3000;
